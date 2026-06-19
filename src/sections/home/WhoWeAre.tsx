@@ -17,21 +17,23 @@ export default function WhoWeAre() {
             <div className="absolute w-[250px] h-[250px] bg-gradient-to-tr from-[#1E6BD6] to-[#FF7A00] opacity-20 filter blur-[80px] rounded-full pointer-events-none" />
             
             <FadeUp>
-              <div className="p-8 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[2.5rem] shadow-xl backdrop-blur-md relative overflow-hidden text-center max-w-sm mx-auto group">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-color)]/10 blur-[40px] rounded-full pointer-events-none -mr-12 -mt-12" />
-                <div className="text-4xl mb-4 animate-pulse">👥</div>
-                <h3 className="font-display font-black text-xl text-[var(--text-primary)] mb-2 uppercase tracking-wide">
-                  Human Centered
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
-                  VANIKARA merges technology with intuitive, human-centered UI/UX experiences, solving campus logistics and resource challenges at scale.
-                </p>
-                <div className="mt-6 flex justify-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#1E6BD6]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF7A00]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFC400]" />
-                </div>
-              </div>
+              <Card hover className="max-w-sm mx-auto group">
+                <CardBody className="p-8 text-center flex flex-col items-center relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-color)]/10 blur-[40px] rounded-full pointer-events-none -mr-12 -mt-12" />
+                  <div className="text-4xl mb-4 animate-pulse">👥</div>
+                  <h3 className="font-display font-black text-xl text-[var(--text-primary)] mb-2 uppercase tracking-wide">
+                    Human Centered
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
+                    VANIKARA merges technology with intuitive, human-centered UI/UX experiences, solving campus logistics and resource challenges at scale.
+                  </p>
+                  <div className="mt-6 flex justify-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#1E6BD6]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF7A00]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFC400]" />
+                  </div>
+                </CardBody>
+              </Card>
             </FadeUp>
           </div>
 

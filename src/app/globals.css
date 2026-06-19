@@ -184,6 +184,7 @@ body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 8px 32px 0 var(--glass-glow);
+  border-radius: var(--radius-lg, 20px);
   transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
 }
 
@@ -193,6 +194,7 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-card);
+  border-radius: var(--radius-lg, 20px);
   transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
