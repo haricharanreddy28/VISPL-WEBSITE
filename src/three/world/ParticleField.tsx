@@ -46,30 +46,14 @@ export default function ParticleField({ count = 650 }) {
 
   useFrame((state, delta) => {
     if (!pointsRef.current) return;
-    const geometry = pointsRef.current.geometry;
-    const positionAttr = geometry.attributes.position;
     const time = state.clock.getElapsedTime();
 
     // Warp factors: speeds multiply dynamically on success
-    const warpMult = view === "success" ? 22.0 : 1.0;
-    
-    // Normalize step size based on 60 FPS delta (0.0166s) and profile multipliers
-    const timeScale = Math.min(3.0, delta / 0.0166) * config.orbitSpeedMult;
+    const warpMult = view === "success" ? 15.0 : 1.0;
 
-    for (let i = 0; i < count; i++) {
-      let x = positionAttr.getX(i) + speeds[i * 3] * warpMult * timeScale;
-      let y = positionAttr.getY(i) + speeds[i * 3 + 1] * warpMult * timeScale + Math.sin(time * 0.4 + i) * 0.0006 * timeScale;
-      let z = positionAttr.getZ(i) + speeds[i * 3 + 2] * warpMult * timeScale;
-
-      // Wrap coordinates around borders
-      if (Math.abs(x) > 9) x = (Math.random() - 0.5) * 16;
-      if (Math.abs(y) > 7) y = (Math.random() - 0.5) * 11;
-      if (z > 4) z = -8;
-      if (z < -10) z = 4;
-
-      positionAttr.setXYZ(i, x, y, z);
-    }
-    positionAttr.needsUpdate = true;
+    // Apply constant orbital rotation to the entire particle field (no jitter, matches rings)
+    pointsRef.current.rotation.y = time * 0.04 * warpMult * config.orbitSpeedMult;
+    pointsRef.current.rotation.x = time * 0.012 * warpMult * config.orbitSpeedMult;
   });
 
   const isDark = resolvedTheme === "dark";
