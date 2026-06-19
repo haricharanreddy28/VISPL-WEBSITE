@@ -32,6 +32,33 @@ const PROMPT_SUGGESTIONS = [
   { label: "Vector search explain", text: "Explain how CYGMA Vector index scores similarities of natural language PG requests." }
 ];
 
+// Lightweight, high-performance regex-based syntax highlighter for common languages
+const highlightSyntax = (code: string, lang: string): string => {
+  const language = lang ? lang.toLowerCase() : "";
+  let highlighted = code;
+
+  if (["js", "jsx", "ts", "tsx", "javascript", "typescript", "json"].includes(language)) {
+    highlighted = highlighted
+      .replace(/\b(const|let|var|function|return|import|export|from|default|class|extends|new|this|typeof|instanceof|if|else|for|while|do|switch|case|break|continue|try|catch|finally|throw|async|await|yield|null|undefined|true|false)\b/g, '<span class="text-pink-500 font-bold">$1</span>')
+      .replace(/\b(string|number|boolean|any|void|unknown|never|interface|type|as)\b/g, '<span class="text-sky-400 font-semibold">$1</span>')
+      .replace(/(\/\/.*|\/\*[\s\S]*?\*\/)/g, '<span class="text-slate-500 italic">$1</span>');
+  } else if (["python", "py"].includes(language)) {
+    highlighted = highlighted
+      .replace(/\b(def|return|class|import|from|as|if|elif|else|for|while|break|continue|try|except|finally|raise|assert|with|lambda|pass|in|is|not|and|or|None|True|False)\b/g, '<span class="text-pink-500 font-bold">$1</span>')
+      .replace(/(#.*)/g, '<span class="text-slate-500 italic">$1</span>');
+  } else if (["sql", "postgresql"].includes(language)) {
+    highlighted = highlighted
+      .replace(/\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|IN|NOT|LIKE|NULL|ORDER|BY|LIMIT|GROUP|HAVING|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|INDEX|DROP|ALTER|ADD|KEY|PRIMARY|FOREIGN|CONSTRAINT|DATABASE|REFERENCES|VARCHAR|INT|BOOLEAN|TIMESTAMP)\b/gi, '<span class="text-pink-500 font-bold">$1</span>')
+      .replace(/(--.*)/g, '<span class="text-slate-500 italic">$1</span>');
+  } else if (["html", "css", "xml"].includes(language)) {
+    highlighted = highlighted
+      .replace(/(&lt;\/?[a-z0-9]+&gt;)/gi, '<span class="text-pink-500">$1</span>')
+      .replace(/([a-z-]+)(?=\s*=\s*['"])/gi, '<span class="text-sky-400">$1</span>')
+      .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="text-slate-500 italic">$1</span>');
+  }
+  return highlighted;
+};
+
 export default function ChatArea({
   messages,
   setMessages,
@@ -255,7 +282,7 @@ export default function ChatArea({
       const base64Code = typeof window !== "undefined" ? btoa(unescape(encodeURIComponent(trimmedCode))) : "";
       
       return `
-        <div class="my-4 overflow-hidden rounded-2xl border border-white/5 bg-[#070b16] select-none font-sans">
+        <div class="my-4 overflow-hidden rounded-2xl border border-white/5 bg-[#070b16] select-none font-sans text-left">
           <div class="flex items-center justify-between px-4 py-2 bg-[#0d1527] border-b border-white/5 text-[9px] font-black uppercase tracking-wider text-slate-400">
             <span>${languageName}</span>
             <button 
@@ -266,7 +293,7 @@ export default function ChatArea({
               Copy
             </button>
           </div>
-          <pre class="p-4 overflow-x-auto text-indigo-300 font-mono text-[11px] sm:text-xs leading-relaxed select-all"><code>${trimmedCode}</code></pre>
+          <pre class="p-4 overflow-x-auto text-indigo-300 font-mono text-[11px] sm:text-xs leading-relaxed select-all"><code>${highlightSyntax(trimmedCode, languageName)}</code></pre>
         </div>
       `;
     });

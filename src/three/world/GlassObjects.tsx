@@ -43,13 +43,13 @@ export default function GlassObjects() {
       list.push({
         id: i,
         pos: new THREE.Vector3(px, py, pz),
-        size: 0.04 + rand() * 0.08,
+        size: 0.012 + rand() * 0.02,
         rotSpeed: new THREE.Vector3(
           (rand() - 0.5) * 1.5,
           (rand() - 0.5) * 1.5,
           (rand() - 0.5) * 1.5
         ),
-        orbitSpeed: 0.05 + rand() * 0.12,
+        orbitSpeed: 0.005 + rand() * 0.01,
         phase: rand() * Math.PI * 2,
       });
     }
@@ -72,9 +72,9 @@ export default function GlassObjects() {
       const mesh = fragmentRefs.current[idx];
       if (mesh) {
         // Self rotation
-        mesh.rotation.x += frag.rotSpeed.x * 0.012 * timeScale;
-        mesh.rotation.y += frag.rotSpeed.y * 0.012 * timeScale;
-        mesh.rotation.z += frag.rotSpeed.z * 0.012 * timeScale;
+        mesh.rotation.x += frag.rotSpeed.x * 0.002 * timeScale;
+        mesh.rotation.y += frag.rotSpeed.y * 0.002 * timeScale;
+        mesh.rotation.z += frag.rotSpeed.z * 0.002 * timeScale;
 
         // Orbit speed multiplier during success passes
         const speedMult = (view === "success" ? 6.0 : 1.0) * timeScale;

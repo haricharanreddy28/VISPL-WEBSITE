@@ -117,7 +117,7 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 20);
     };
     
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
     

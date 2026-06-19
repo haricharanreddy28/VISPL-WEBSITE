@@ -293,7 +293,7 @@ export default function HeroSection() {
                 className="flex flex-col sm:flex-row gap-3.5 justify-center items-center w-full sm:w-auto"
               >
                 <Button 
-                  href="/projects" 
+                  href="/products" 
                   variant="primary" 
                   size="md" 
                   className="w-full sm:w-auto" 
