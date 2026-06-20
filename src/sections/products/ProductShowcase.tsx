@@ -141,6 +141,8 @@ export default function ProductShowcase() {
                           src={prod.mockupUrl}
                           alt={`${prod.title} Mockup`}
                           className="w-full h-auto rounded-xl object-cover"
+                          width={500}
+                          height={380}
                         />
                       </div>
                     ) : (

@@ -168,6 +168,8 @@ export default function ProjectsPage() {
                         src={project.mockupUrl}
                         alt={`${project.title} App Mockup`}
                         className="w-full h-auto rounded-[1.6rem] object-cover"
+                        width={640}
+                        height={400}
                       />
                     </div>
                   ) : (

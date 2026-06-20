@@ -99,6 +99,8 @@ export default function FlagshipProduct() {
                   src="/images/vanik_mockup.png"
                   alt="Vanik App Showcase"
                   className="w-full h-auto rounded-[2rem] object-cover"
+                  width={640}
+                  height={400}
                 />
               </div>
             </FadeUp>
