@@ -7,6 +7,23 @@ import BackgroundSystem from '@/components/layout/BackgroundSystem';
 import { CygmaWorldProvider } from '@/context/CygmaWorldContext';
 import { ConsentProvider } from '@/context/ConsentContext';
 import { PerformanceProvider } from '@/context/PerformanceContext';
+import { Inter, Outfit } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -51,7 +68,7 @@ export default function RootLayout({
                 "email": "vanikara26@gmail.com",
                 "areaServed": "IN",
                 "availableLanguage": "en"
-              },
+                  },
               "sameAs": [
                 "https://github.com/GOURAVKARUMUDI/Vanikara-web"
               ]
@@ -59,7 +76,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body className={`${inter.variable} ${outfit.variable} antialiased`}>
         <ThemeProvider>
           <CygmaWorldProvider>
             <ConsentProvider>
@@ -69,6 +86,8 @@ export default function RootLayout({
                 <MainLayout>
                   {children}
                 </MainLayout>
+                <SpeedInsights />
+                <Analytics />
               </PerformanceProvider>
             </ConsentProvider>
           </CygmaWorldProvider>

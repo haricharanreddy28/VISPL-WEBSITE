@@ -67,7 +67,7 @@ const PROFILE_CONFIGS: Record<PerformanceProfile, Omit<PerformanceConfig, "orbit
     usePostProcessing: true,
     bloomIntensity: 0.75,
     bloomMipmapBlur: false,
-    useHeavyTransmission: false,
+    useHeavyTransmission: true,
     glassObjectsCount: 8,
     targetFps: 60,
     neuralNetworkNodeCount: 8,
@@ -113,7 +113,9 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
   const frameTimesRef = useRef<number[]>([]);
   const lastFrameTimeRef = useRef<number>(0);
   const lowFpsCountRef = useRef<number>(0);
+  const highFpsCountRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(0);
 
   // Load manual settings on mount
   useEffect(() => {
@@ -153,11 +155,9 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
       gpu: "Hardware Accelerated",
     });
 
-    if (isMobile) {
-      setAutoProfile("low");
-    } else {
-      setAutoProfile("high");
-    }
+    // Start all viewports at high to ensure identical immersive visuals on load,
+    // allowing the adaptive FPS feedback loop to downgrade performance dynamically if needed.
+    setAutoProfile("high");
   }, []);
 
   // Simple FPS counter loop with dynamic tuning
@@ -168,6 +168,10 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
     let isRunning = true;
     lastFrameTimeRef.current = performance.now();
     lastTimeRef.current = performance.now();
+
+    startTimeRef.current = performance.now();
+    lowFpsCountRef.current = 0;
+    highFpsCountRef.current = 0;
 
     const checkFrame = () => {
       if (!isRunning) return;
@@ -195,23 +199,43 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
         lastTimeRef.current = now;
 
         if (profileOverride === "auto") {
-          // If FPS is critically low (below 38)
-          if (currentFps < 38) {
-            lowFpsCountRef.current += 1;
-            // Downgrade after 3 seconds of consistently low FPS
-            if (lowFpsCountRef.current >= 3) {
+          // Warm-up phase: Wait 6 seconds before running telemetry profiling adjustments
+          if (now - startTimeRef.current >= 6000) {
+            // If FPS is critically low (below 38)
+            if (currentFps < 38) {
+              highFpsCountRef.current = 0; // Reset upgrade counter
+              lowFpsCountRef.current += 1;
+              // Downgrade after 3 seconds of consistently low FPS
+              if (lowFpsCountRef.current >= 3) {
+                lowFpsCountRef.current = 0;
+                setAutoProfile((prev) => {
+                  if (prev === "ultra") return "high";
+                  if (prev === "high") return "medium";
+                  if (prev === "medium") return "low";
+                  if (prev === "low") return "battery";
+                  return prev;
+                });
+              }
+            } else if (currentFps >= 54) {
+              lowFpsCountRef.current = 0; // Reset downgrade counter
+              highFpsCountRef.current += 1;
+              // Upgrade after 5 seconds of consistently high/stable FPS
+              if (highFpsCountRef.current >= 5) {
+                highFpsCountRef.current = 0;
+                setAutoProfile((prev) => {
+                  if (prev === "battery") return "low";
+                  if (prev === "low") return "medium";
+                  if (prev === "medium") return "high";
+                  // Let desktop users auto-upgrade to ultra
+                  if (prev === "high" && window.innerWidth >= 768) return "ultra";
+                  return prev;
+                });
+              }
+            } else {
+              // Stable frame rate in middle range (38 - 53) -> reset both counters
               lowFpsCountRef.current = 0;
-              setAutoProfile((prev) => {
-                if (prev === "ultra") return "high";
-                if (prev === "high") return "medium";
-                if (prev === "medium") return "low";
-                if (prev === "low") return "battery";
-                return prev;
-              });
+              highFpsCountRef.current = 0;
             }
-          } else {
-            // Reset counter if FPS is stable
-            lowFpsCountRef.current = 0;
           }
         }
       }
