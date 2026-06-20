@@ -17,6 +17,7 @@ export default function BackgroundSystem() {
   const { atmosphere } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
 
   // Get particle color based on active atmosphere
   const getParticleColor = (mode: AtmosphereMode): string => {
@@ -33,15 +34,25 @@ export default function BackgroundSystem() {
     }
   };
 
+  // Detect mobile device on mount to prevent SSR hydration mismatches
   useEffect(() => {
+    const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    setIsMobileDevice(mobileCheck);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileDevice) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [isMobileDevice]);
 
   useEffect(() => {
+    if (isMobileDevice) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -129,7 +140,7 @@ export default function BackgroundSystem() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationId);
     };
-  }, [atmosphere]);
+  }, [atmosphere, isMobileDevice]);
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none -z-50 select-none">
@@ -154,18 +165,20 @@ export default function BackgroundSystem() {
       />
 
       {/* Layer 3: Interactive Canvas Particles */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />
+      {!isMobileDevice && <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />}
 
       {/* Layer 4: Interactive cursor glow effect */}
-      <div
-        className="absolute w-[350px] h-[350px] rounded-full filter blur-[100px] transition-transform duration-300 ease-out pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, var(--accent-color), transparent 75%)`,
-          transform: `translate3d(${mousePos.x - 175}px, ${mousePos.y - 175}px, 0)`,
-          mixBlendMode: "var(--orb-blend)" as any,
-          opacity: "calc(var(--orb-opacity) * 0.6)",
-        }}
-      />
+      {!isMobileDevice && (
+        <div
+          className="absolute w-[350px] h-[350px] rounded-full filter blur-[100px] transition-transform duration-300 ease-out pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, var(--accent-color), transparent 75%)`,
+            transform: `translate3d(${mousePos.x - 175}px, ${mousePos.y - 175}px, 0)`,
+            mixBlendMode: "var(--orb-blend)" as any,
+            opacity: "calc(var(--orb-opacity) * 0.6)",
+          }}
+        />
+      )}
 
       {/* Layer 5: Film Grain Noise Overlay */}
       <div 

@@ -204,6 +204,8 @@ export default function Navbar() {
                 src="/logo.png" 
                 alt="Vanikara Logo" 
                 className="w-6 h-auto group-hover:scale-110 transition-transform duration-300" 
+                width={24}
+                height={24}
               />
             </div>
             <span className="font-display font-black text-xs tracking-widest text-[var(--text-primary)]">
@@ -371,7 +373,7 @@ export default function Navbar() {
           >
             <div className="flex justify-between items-center mt-4">
               <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Vanikara Logo" className="w-7 h-auto" />
+                <img src="/logo.png" alt="Vanikara Logo" className="w-7 h-auto" width={28} height={28} />
                 <span className="font-display font-black text-xs tracking-widest text-[var(--text-primary)]">
                   VANIKARA
                 </span>

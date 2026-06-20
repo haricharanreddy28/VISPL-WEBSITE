@@ -154,7 +154,7 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
     });
 
     if (isMobile) {
-      setAutoProfile("medium");
+      setAutoProfile("low");
     } else {
       setAutoProfile("high");
     }
